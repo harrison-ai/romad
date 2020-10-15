@@ -5,6 +5,7 @@ authors = ["Ben Johnston"]
 edition = "2018"
 license-file = "LICENSE"
 keywords = ["hashicorp", "nomad"]
+description = "Rust API for Hashicorp's Nomad"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
