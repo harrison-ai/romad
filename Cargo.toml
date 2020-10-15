@@ -1,12 +1,20 @@
 [package]
 name = "romad"
-version = "0.1.0"
+version = "0.1.0-1"
 authors = ["Ben Johnston"]
 edition = "2018"
-license-file = "LICENSE"
+license = "GPL-3.0-only"
 keywords = ["hashicorp", "nomad"]
 description = "Rust API for Hashicorp's Nomad"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+env_logger = "0.7.1"
+log = "0.4"
+reqwest = "0.10.8"
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+[dev-dependencies]
+tokio = "0.2.22"

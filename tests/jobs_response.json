@@ -1,0 +1,42 @@
+{
+    "ID": "example",
+    "ParentID": "",
+    "Name": "example",
+    "Namespace": "",
+    "Datacenters": [
+        "dc1"
+    ],
+    "Multiregion": null,
+    "Type": "service",
+    "Priority": 50,
+    "Periodic": false,
+    "ParameterizedJob": false,
+    "Stop": false,
+    "Status": "running",
+    "StatusDescription": "",
+    "JobSummary": {
+        "JobID": "example",
+        "Namespace": "default",
+        "Summary": {
+            "cache": {
+                "Queued": 0,
+                "Complete": 0,
+                "Failed": 0,
+                "Running": 1,
+                "Starting": 0,
+                "Lost": 0
+            }
+        },
+        "Children": {
+            "Pending": 0,
+            "Running": 0,
+            "Dead": 0
+        },
+        "CreateIndex": 10,
+        "ModifyIndex": 14
+    },
+    "CreateIndex": 10,
+    "ModifyIndex": 17,
+    "JobModifyIndex": 10,
+    "SubmitTime": 1602723315240288800
+}
