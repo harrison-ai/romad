@@ -67,13 +67,14 @@ mod test {
         assert_eq!(job.Priority, 50);
         assert_eq!(job.ParameterizedJob, false);
 
-        // assert_eq!(
-        //     job.JobSummary
-        //         .Summary
-        //         .cache
-        //         .get(&RunningStatus::Running)
-        //         .unwrap(),
-        //     &1
-        // );
+        assert_eq!(
+            job.JobSummary
+                .Summary
+                .get("cache")
+                .unwrap()
+                .get(&RunningStatus::Running)
+                .unwrap(),
+            &1
+        );
     }
 }

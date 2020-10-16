@@ -26,25 +26,23 @@ impl fmt::Display for RomadClientError {
     }
 }
 
-pub struct RomadClient<'a> {
-    connection: Connection<'a>,
+pub struct RomadClient {
     base_url: String,
     client: Client,
 }
 
-impl<'a> RomadClient<'a> {
+impl RomadClient {
     /// New
     pub fn new(
-        address: &'a str,
-        port: &'a str,
-        token: Option<&'a str>,
-        timeout: isize,
-    ) -> Result<RomadClient<'a>, RomadClientError> {
+        address: &'static str,
+        port: &'static str,
+        token: std::option::Option<&'static str>,
+    ) -> Result<RomadClient, RomadClientError> {
         let connection: Connection = Connection {
             address,
             port,
             token,
-            timeout,
+            timeout: 0,
             version: "1",
         };
 
@@ -52,9 +50,7 @@ impl<'a> RomadClient<'a> {
     }
 
     /// Create client from a connection object
-    pub fn from_connection(
-        connection: Connection<'a>,
-    ) -> Result<RomadClient<'a>, RomadClientError> {
+    pub fn from_connection(connection: Connection) -> Result<RomadClient, RomadClientError> {
         let base_url = connection.build_base_url();
 
         let client = match Client::builder().build() {
@@ -67,11 +63,7 @@ impl<'a> RomadClient<'a> {
             }
         };
 
-        Ok(RomadClient {
-            connection,
-            base_url,
-            client,
-        })
+        Ok(RomadClient { base_url, client })
     }
     /// Get base url
     pub fn get_base_url(&self) -> &String {
@@ -83,7 +75,7 @@ impl<'a> RomadClient<'a> {
         &self.client
     }
 
-    /// Function calls the [List Jobs](https://www.nomadproject.io/api-docs/jobs#list-jobs)
+    /// Method calls the [List Jobs](https://www.nomadproject.io/api-docs/jobs#list-jobs)
     /// endpoint
     /// TODO: Implement prefix and namespace filter
     pub async fn list_jobs(
@@ -91,8 +83,6 @@ impl<'a> RomadClient<'a> {
         prefix: Option<&String>,
         namespace: Option<&String>,
     ) -> Result<Vec<Job>, RomadClientError> {
-        let mut jobs: Vec<Job> = Vec::new();
-
         let client = self.get_client();
 
         // Construct the url from th base
@@ -137,7 +127,7 @@ mod test {
 
     #[test]
     fn test_default_client() {
-        let client: RomadClient = RomadClient::new("localhost", "4646", None, 0).unwrap();
+        let client: RomadClient = RomadClient::new("http://localhost", "4646", None).unwrap();
 
         assert_eq!(client.get_base_url(), "http://localhost:4646/v1");
     }

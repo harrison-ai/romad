@@ -43,7 +43,7 @@ impl Default for Connection<'_> {
             address: "http://localhost",
             port: "4646",
             token: None,
-            timeout: 5,
+            timeout: 0,
             version: "1",
         }
     }
