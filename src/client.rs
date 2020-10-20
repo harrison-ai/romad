@@ -136,7 +136,7 @@ impl RomadClient {
         prefix: Option<&String>,
         namespace: Option<&String>,
     ) -> Result<String, RomadClientError> {
-        let url: String = format!("{}/jobs", self.base_url);
+        let url: String = format!("{}/allocations", self.base_url);
 
         debug!("Listing allocations using url {}", url);
         match self.execute(&url, &namespace, &prefix).await {
