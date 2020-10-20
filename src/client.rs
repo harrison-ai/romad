@@ -35,12 +35,12 @@ pub struct RomadClient {
     client: Client,
 }
 
-impl RomadClient {
+impl<'a> RomadClient {
     /// New
     pub fn new(
-        address: &'static str,
-        port: &'static str,
-        token: std::option::Option<&'static str>,
+        address: &'a str,
+        port: &'a str,
+        token: std::option::Option<&'a str>,
     ) -> Result<RomadClient, RomadClientError> {
         let connection: Connection = Connection {
             address,
