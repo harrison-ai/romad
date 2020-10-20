@@ -1,6 +1,7 @@
 //! # The base library components
 //!
 //!
+use std::error::Error;
 use std::fmt;
 
 /// Base Error for Crate
@@ -20,6 +21,8 @@ impl fmt::Display for RomadError {
         write!(f, "RomadError: {}", self.msg)
     }
 }
+
+impl Error for RomadError {}
 
 /// Connection object
 /// Default values http://localhost:4646/v1
