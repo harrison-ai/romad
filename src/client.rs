@@ -5,6 +5,7 @@
 use crate::base::Connection;
 use crate::jobs::Job;
 use log::{debug, error, warn};
+use reqwest;
 use reqwest::Client;
 use std::fmt;
 
@@ -75,19 +76,12 @@ impl RomadClient {
         &self.client
     }
 
-    /// Method calls the [List Jobs](https://www.nomadproject.io/api-docs/jobs#list-jobs)
-    /// endpoint
-    /// TODO: Implement prefix and namespace filter
-    pub async fn list_jobs(
+    async fn execute(
         &mut self,
-        prefix: Option<&String>,
-        namespace: Option<&String>,
-    ) -> Result<Vec<Job>, RomadClientError> {
-        let client = self.get_client();
-
-        // Construct the url from th base
-        let url: String = format!("{}/jobs", self.base_url);
-
+        url: &String,
+        prefix: &Option<&String>,
+        namespace: &Option<&String>,
+    ) -> Result<String, reqwest::Error> {
         match namespace {
             Some(_) => {
                 warn!("Listing jobs by namespace is not yet implemented, defaulting to no specified namespace")
@@ -102,21 +96,55 @@ impl RomadClient {
             None => {}
         }
 
+        let client = self.get_client();
+        let response = client.get(url).send().await?;
+        response.text().await
+    }
+
+    /// Method calls the [List Jobs](https://www.nomadproject.io/api-docs/jobs#list-jobs)
+    /// endpoint
+    /// TODO: Implement prefix and namespace filter
+    pub async fn list_jobs(
+        &mut self,
+        prefix: Option<&String>,
+        namespace: Option<&String>,
+    ) -> Result<Vec<Job>, RomadClientError> {
+        // Construct the url from th base
+        let url: String = format!("{}/jobs", self.base_url);
+
         debug!("Listing jobs using url {}", url);
-
-        let response = match client.get(&url).send().await {
-            Ok(resp) => resp,
-            Err(e) => return Err(RomadClientError::new(format!("{}", e))),
-        };
-
-        debug!("List jobs response headers: {:?}", response);
-        match response.text().await {
+        match self.execute(&url, &namespace, &prefix).await {
             Ok(text) => {
                 println!("List jobs response: {}", text);
-                let jobs: Vec<Job> = serde_json::from_str(&text).unwrap();
+                let jobs: Vec<Job> = match serde_json::from_str(&text) {
+                    Ok(jobs) => jobs,
+                    Err(e) => {
+                        return Err(RomadClientError::new(format!(
+                            "Unable to convert string to jobs {}",
+                            e
+                        )))
+                    }
+                };
                 Ok(jobs)
             }
-            Err(e) => return Err(RomadClientError::new(format!("{}", e))),
+            Err(e) => return Err(RomadClientError::new(format!("Unable to list jobs {}", e))),
+        }
+    }
+
+    pub async fn list_allocations(
+        &mut self,
+        prefix: Option<&String>,
+        namespace: Option<&String>,
+    ) -> Result<String, RomadClientError> {
+        let url: String = format!("{}/jobs", self.base_url);
+
+        debug!("Listing allocations using url {}", url);
+        match self.execute(&url, &namespace, &prefix).await {
+            Ok(text) => {
+                println!("Listing allocations response: {}", text);
+                Ok(text)
+            }
+            Err(e) => return Err(RomadClientError::new(format!("Unable to list jobs {}", e))),
         }
     }
 }
