@@ -140,10 +140,7 @@ impl RomadClient {
 
         debug!("Listing allocations using url {}", url);
         match self.execute(&url, &namespace, &prefix).await {
-            Ok(text) => {
-                println!("Listing allocations response: {}", text);
-                Ok(text)
-            }
+            Ok(text) => Ok(text),
             Err(e) => return Err(RomadClientError::new(format!("Unable to list jobs {}", e))),
         }
     }
