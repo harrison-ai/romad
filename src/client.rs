@@ -7,6 +7,7 @@ use crate::jobs::Job;
 use log::{debug, error, warn};
 use reqwest;
 use reqwest::Client;
+use std::error::Error;
 use std::fmt;
 
 /// Client Error
@@ -26,6 +27,8 @@ impl fmt::Display for RomadClientError {
         write!(f, "RomadClientError: {}", self.msg)
     }
 }
+
+impl Error for RomadClientError {}
 
 pub struct RomadClient {
     base_url: String,
